@@ -18,7 +18,7 @@ def readJSON(fp: Path, chunksize: int = 10000) -> Iterator[DataFrame]:
 
 
 def getDocuments(df: DataFrame) -> DataFrame:
-    return df[
+    documentsDF: DataFrame = df[
         [
             "id",
             "title",
@@ -31,12 +31,23 @@ def getDocuments(df: DataFrame) -> DataFrame:
             "abstract",
             "update_date",
         ]
-    ]
+    ].copy()
+
+    documentsDF["update_date"] = pandas.to_datetime(
+        arg=documentsDF["update_date"],
+    )
+
+    return documentsDF
 
 
 def getAuthors(df: DataFrame, idIncrement: int = 0) -> DataFrame:
     authorsDF: DataFrame = df[["id", "authors_parsed"]]
-    authorsDF = authorsDF.explode(column="authors_parsed", ignore_index=True)
+
+    authorsDF = authorsDF.explode(
+        column="authors_parsed",
+        ignore_index=True,
+    )
+
     authorsDF["author"] = authorsDF["authors_parsed"].apply(
         lambda x: ", ".join(x),
     )
@@ -44,7 +55,13 @@ def getAuthors(df: DataFrame, idIncrement: int = 0) -> DataFrame:
     authorsDF = authorsDF.drop(columns="authors_parsed")
     authorsDF.index += idIncrement
     authorsDF = authorsDF.reset_index()
-    authorsDF = authorsDF.rename(columns={"id": "document_id", "index": "id"})
+
+    authorsDF = authorsDF.rename(
+        columns={
+            "id": "document_id",
+            "index": "id",
+        }
+    )
 
     return authorsDF
 
@@ -59,6 +76,11 @@ def getVersions(df: DataFrame, idIncrement: int = 0) -> DataFrame:
 
     versionsDF["created"] = versionsDF["versions"].apply(
         lambda x: x["created"],
+    )
+
+    versionsDF["created"] = pandas.to_datetime(
+        arg=versionsDF["created"],
+        format=r"%a, %d %b %Y %H:%M:%S %Z",
     )
 
     versionsDF = versionsDF.drop(columns="versions")
@@ -91,6 +113,7 @@ def loadData(dfs: Iterator[DataFrame], db: DB) -> None:
                 idIncrement=versionsIDIncrement,
             )
             documentsDF: DataFrame = getDocuments(df=df)
+
             db.toSQL(tableName=db.documentTable, df=documentsDF)
             authorRows: int = db.toSQL(tableName=db.authorTable, df=authorsDF)
 

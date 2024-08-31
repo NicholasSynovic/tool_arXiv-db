@@ -4,6 +4,7 @@ from typing import List
 from pandas import DataFrame
 from sqlalchemy import (
     Column,
+    DateTime,
     Engine,
     ForeignKeyConstraint,
     Integer,
@@ -41,7 +42,7 @@ class DB:
             Column("report-no", String),
             Column("license", String),
             Column("abstract", String),
-            Column("update_date", String),
+            Column("update_date", DateTime),
             PrimaryKeyConstraint("id"),
         )
 
