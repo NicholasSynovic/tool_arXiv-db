@@ -3,6 +3,7 @@ from typing import Iterator
 
 import pandas
 from pandas import DataFrame
+from progress.spinner import Spinner
 
 from src.db import DB
 
@@ -33,16 +34,12 @@ def getDocuments(df: DataFrame) -> DataFrame:
 
 
 def loadData(dfs: Iterator[DataFrame], db: DB) -> None:
-    df: DataFrame
-    for df in dfs:
-        documentsDF: DataFrame = getDocuments(df=df)
-        documentsDF.to_sql(
-            name=db.documentTable,
-            con=db.engine,
-            if_exists="append",
-            index=False,
-        )
-        quit()
+    with Spinner(f"Loading data into {db.path}... ") as spinner:
+        df: DataFrame
+        for df in dfs:
+            documentsDF: DataFrame = getDocuments(df=df)
+            db.toSQL(tableName=db.documentTable, df=documentsDF)
+            spinner.next()
 
 
 def main() -> None:

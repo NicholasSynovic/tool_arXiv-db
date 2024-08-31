@@ -1,5 +1,7 @@
 from pathlib import Path
+from typing import List
 
+from pandas import DataFrame
 from sqlalchemy import (
     Column,
     Engine,
@@ -9,6 +11,7 @@ from sqlalchemy import (
     Table,
     create_engine,
 )
+from sqlalchemy.exc import IntegrityError
 
 
 class DB:
@@ -38,3 +41,22 @@ class DB:
         )
 
         self.metadata.create_all(bind=self.engine, checkfirst=True)
+
+    def toSQL(self, tableName: str, df: DataFrame) -> None:
+        try:
+            df.to_sql(
+                name=tableName,
+                con=self.engine,
+                if_exists="append",
+                index=False,
+            )
+        except IntegrityError as error:
+            ids: List[str] = [param[0] for param in error.params]
+            uniqueDF: DataFrame = df[~df["id"].isin(values=ids)]
+
+            uniqueDF.to_sql(
+                name=tableName,
+                con=self.engine,
+                if_exists="append",
+                index=False,
+            )
