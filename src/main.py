@@ -50,13 +50,21 @@ def getAuthors(df: DataFrame, idIncrement: int = 0) -> DataFrame:
 
 
 def loadData(dfs: Iterator[DataFrame], db: DB) -> None:
+    authorIDIncrement: int = 0
+
     with Spinner(f"Loading data into {db.path}... ") as spinner:
         df: DataFrame
         for df in dfs:
-            authorsDF: DataFrame = getAuthors(df=df)
+            authorsDF: DataFrame = getAuthors(
+                df=df,
+                idIncrement=authorIDIncrement,
+            )
             documentsDF: DataFrame = getDocuments(df=df)
             db.toSQL(tableName=db.documentTable, df=documentsDF)
-            db.toSQL(tableName=db.authorTable, df=authorsDF)
+            authorRows: int = db.toSQL(tableName=db.authorTable, df=authorsDF)
+
+            authorIDIncrement += authorRows
+
             spinner.next()
 
 

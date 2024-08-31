@@ -24,6 +24,7 @@ class DB:
 
         self.documentTable: str = "documents"
         self.authorTable: str = "authors"
+        self.versionTable: str = "versions"
 
         self.createTables()
 
@@ -57,9 +58,23 @@ class DB:
             ),
         )
 
+        _: Table = Table(
+            self.versionTable,
+            self.metadata,
+            Column("id", Integer),
+            Column("document_id", String),
+            Column("version", String),
+            Column("created", String),
+            PrimaryKeyConstraint("id"),
+            ForeignKeyConstraint(
+                columns=["document_id"],
+                refcolumns=["documents.id"],
+            ),
+        )
+
         self.metadata.create_all(bind=self.engine, checkfirst=True)
 
-    def toSQL(self, tableName: str, df: DataFrame) -> None:
+    def toSQL(self, tableName: str, df: DataFrame) -> int:
         try:
             df.to_sql(
                 name=tableName,
@@ -67,13 +82,16 @@ class DB:
                 if_exists="append",
                 index=False,
             )
+
         except IntegrityError as error:
             ids: List[str] = [param[0] for param in error.params]
-            uniqueDF: DataFrame = df[~df["id"].isin(values=ids)]
+            df = df[~df["id"].isin(values=ids)]
 
-            uniqueDF.to_sql(
+            df.to_sql(
                 name=tableName,
                 con=self.engine,
                 if_exists="append",
                 index=False,
             )
+
+        return df.shape[0]
