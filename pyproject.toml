@@ -12,6 +12,7 @@ classifiers = ["Development Status :: 1 - Planning"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+kaggle = "^1.6.17"
 
 
 [build-system]
