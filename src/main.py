@@ -36,7 +36,12 @@ def loadData(dfs: Iterator[DataFrame], db: DB) -> None:
     df: DataFrame
     for df in dfs:
         documentsDF: DataFrame = getDocuments(df=df)
-        print(documentsDF.columns)
+        documentsDF.to_sql(
+            name=db.documentTable,
+            con=db.engine,
+            if_exists="append",
+            index=False,
+        )
         quit()
 
 

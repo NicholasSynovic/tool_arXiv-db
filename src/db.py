@@ -17,11 +17,13 @@ class DB:
         self.engine: Engine = create_engine(url=f"sqlite:///{path}")
         self.metadata: MetaData = MetaData()
 
+        self.documentTable: str = "documents"
+
         self.createTables()
 
     def createTables(self) -> None:
         _: Table = Table(
-            "documents",
+            self.documentTable,
             self.metadata,
             Column("id", String),
             Column("title", String),
