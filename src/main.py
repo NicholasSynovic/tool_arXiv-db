@@ -49,8 +49,35 @@ def getAuthors(df: DataFrame, idIncrement: int = 0) -> DataFrame:
     return authorsDF
 
 
+def getVersions(df: DataFrame, idIncrement: int = 0) -> DataFrame:
+    versionsDF: DataFrame = df[["id", "versions"]]
+    versionsDF = versionsDF.explode(column="versions", ignore_index=True)
+
+    versionsDF["version"] = versionsDF["versions"].apply(
+        lambda x: x["version"],
+    )
+
+    versionsDF["created"] = versionsDF["versions"].apply(
+        lambda x: x["created"],
+    )
+
+    versionsDF = versionsDF.drop(columns="versions")
+    versionsDF.index += idIncrement
+    versionsDF = versionsDF.reset_index()
+
+    versionsDF = versionsDF.rename(
+        columns={
+            "id": "document_id",
+            "index": "id",
+        },
+    )
+
+    return versionsDF
+
+
 def loadData(dfs: Iterator[DataFrame], db: DB) -> None:
     authorIDIncrement: int = 0
+    versionsIDIncrement: int = 0
 
     with Spinner(f"Loading data into {db.path}... ") as spinner:
         df: DataFrame
@@ -59,11 +86,21 @@ def loadData(dfs: Iterator[DataFrame], db: DB) -> None:
                 df=df,
                 idIncrement=authorIDIncrement,
             )
+            versionsDF: DataFrame = getVersions(
+                df=df,
+                idIncrement=versionsIDIncrement,
+            )
             documentsDF: DataFrame = getDocuments(df=df)
             db.toSQL(tableName=db.documentTable, df=documentsDF)
             authorRows: int = db.toSQL(tableName=db.authorTable, df=authorsDF)
 
+            versionRows: int = db.toSQL(
+                tableName=db.versionTable,
+                df=versionsDF,
+            )
+
             authorIDIncrement += authorRows
+            versionsIDIncrement += versionRows
 
             spinner.next()
 
