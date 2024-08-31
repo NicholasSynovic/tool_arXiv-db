@@ -1,0 +1,26 @@
+{
+    "name": "Project Devcontainer",
+    "image": "python:3.10-bookworm",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "editor.wordWrapColumn": 79,
+                "editor.wordWrap": "bounded"
+
+        },
+            "extensions": [
+                "streetsidesoftware.code-spell-checker",
+                "adpyke.codesnap",
+                "Shinotatwu-DS.file-tree-generator",
+                "yzhang.markdown-all-in-one",
+                "DavidAnson.vscode-markdownlint",
+                "vscode-icons-team.vscode-icons",
+                "ms-azuretools.vscode-docker",
+                "ms-vscode.makefile-tools",
+                "njpwerner.autodocstring",
+                "ms-python.python",
+                "ms-python.debugpy"
+            ]
+        }
+    }
+}
