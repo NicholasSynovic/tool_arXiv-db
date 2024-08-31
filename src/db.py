@@ -5,6 +5,8 @@ from pandas import DataFrame
 from sqlalchemy import (
     Column,
     Engine,
+    ForeignKeyConstraint,
+    Integer,
     MetaData,
     PrimaryKeyConstraint,
     String,
@@ -21,6 +23,7 @@ class DB:
         self.metadata: MetaData = MetaData()
 
         self.documentTable: str = "documents"
+        self.authorTable: str = "authors"
 
         self.createTables()
 
@@ -30,6 +33,7 @@ class DB:
             self.metadata,
             Column("id", String),
             Column("title", String),
+            Column("submitter", String),
             Column("comments", String),
             Column("journal-ref", String),
             Column("doi", String),
@@ -38,6 +42,19 @@ class DB:
             Column("abstract", String),
             Column("update_date", String),
             PrimaryKeyConstraint("id"),
+        )
+
+        _: Table = Table(
+            self.authorTable,
+            self.metadata,
+            Column("id", Integer),
+            Column("document_id", String),
+            Column("author", String),
+            PrimaryKeyConstraint("id"),
+            ForeignKeyConstraint(
+                columns=["document_id"],
+                refcolumns=["documents.id"],
+            ),
         )
 
         self.metadata.create_all(bind=self.engine, checkfirst=True)

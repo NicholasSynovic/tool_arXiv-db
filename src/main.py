@@ -22,6 +22,7 @@ def getDocuments(df: DataFrame) -> DataFrame:
         [
             "id",
             "title",
+            "submitter",
             "comments",
             "journal-ref",
             "doi",
@@ -33,12 +34,29 @@ def getDocuments(df: DataFrame) -> DataFrame:
     ]
 
 
+def getAuthors(df: DataFrame, idIncrement: int = 0) -> DataFrame:
+    authorsDF: DataFrame = df[["id", "authors_parsed"]]
+    authorsDF = authorsDF.explode(column="authors_parsed", ignore_index=True)
+    authorsDF["author"] = authorsDF["authors_parsed"].apply(
+        lambda x: ", ".join(x),
+    )
+
+    authorsDF = authorsDF.drop(columns="authors_parsed")
+    authorsDF.index += idIncrement
+    authorsDF = authorsDF.reset_index()
+    authorsDF = authorsDF.rename(columns={"id": "document_id", "index": "id"})
+
+    return authorsDF
+
+
 def loadData(dfs: Iterator[DataFrame], db: DB) -> None:
     with Spinner(f"Loading data into {db.path}... ") as spinner:
         df: DataFrame
         for df in dfs:
+            authorsDF: DataFrame = getAuthors(df=df)
             documentsDF: DataFrame = getDocuments(df=df)
             db.toSQL(tableName=db.documentTable, df=documentsDF)
+            db.toSQL(tableName=db.authorTable, df=authorsDF)
             spinner.next()
 
 
