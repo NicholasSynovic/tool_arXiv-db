@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Iterator
 
+import click
 import pandas
 from pandas import DataFrame
 from progress.spinner import Spinner
@@ -128,11 +129,39 @@ def loadData(dfs: Iterator[DataFrame], db: DB) -> None:
             spinner.next()
 
 
-def main() -> None:
-    fp: Path = Path("../data/arxiv.jsonlines")
-    jr: Iterator[DataFrame] = readJSON(fp=fp)
+@click.command()
+@click.option(
+    "-i",
+    "--input",
+    "inputPath",
+    type=click.Path(
+        exists=True,
+        file_okay=True,
+        readable=True,
+        resolve_path=True,
+        path_type=Path,
+    ),
+    required=True,
+    help="Path to a JSON Lines arXiv metadata file",
+)
+@click.option(
+    "-o",
+    "--output",
+    "outputPath",
+    type=click.Path(
+        exists=False,
+        file_okay=True,
+        writable=True,
+        resolve_path=True,
+        path_type=Path,
+    ),
+    required=True,
+    help="Path to store SQLite3 database",
+)
+def main(inputPath: Path, outputPath: Path) -> None:
+    jr: Iterator[DataFrame] = readJSON(fp=inputPath)
 
-    db: DB = DB(path=Path("test.db"))
+    db: DB = DB(path=outputPath)
 
     loadData(dfs=jr, db=db)
 

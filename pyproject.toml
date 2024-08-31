@@ -16,6 +16,7 @@ kaggle = "^1.6.17"
 sqlalchemy = "^2.0.32"
 pandas = "^2.2.2"
 progress = "^1.6"
+click = "^8.1.7"
 
 
 [build-system]
