@@ -14,6 +14,8 @@ classifiers = ["Development Status :: 1 - Planning"]
 python = "^3.10"
 kaggle = "^1.6.17"
 sqlalchemy = "^2.0.32"
+pandas = "^2.2.2"
+progress = "^1.6"
 
 
 [build-system]

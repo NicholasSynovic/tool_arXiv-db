@@ -35,4 +35,4 @@ class DB:
             PrimaryKeyConstraint("id"),
         )
 
-        self.metadata.create_all(checkfirst=True)
+        self.metadata.create_all(bind=self.engine, checkfirst=True)
