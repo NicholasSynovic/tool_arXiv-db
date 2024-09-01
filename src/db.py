@@ -101,7 +101,7 @@ class DB:
         self.metadata.create_all(bind=self.engine, checkfirst=True)
 
     def toSQL(self, tableName: str, df: DataFrame) -> int:
-        """#noqa: E501
+        """
         Load a DataFrame into a SQL table.
 
         This method takes a DataFrame and loads it into a specified SQL table.
