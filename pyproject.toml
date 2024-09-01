@@ -1,14 +1,14 @@
 [tool.poetry]
 name = "src"
 version = "0.1.0"
-description = "Hello World"
+description = "Code to convert the [arXiv Dataset](https://www.kaggle.com/datasets/Cornell-University/arxiv) from JSON to an SQLite3 database"
 license = "GNU Affero"
 authors = ["Nicholas M. Synovic <nicholas.synovic@gmail.com>"]
 readme = "README.md"
-homepage = "https://github.com/NicholasSynovic/template_python"
-repository = "https://github.com/NicholasSynovic/template_python"
-keywords = ["Template"]
-classifiers = ["Development Status :: 1 - Planning"]
+homepage = "https://github.com/NicholasSynovic/tool_arXiv-db"
+repository = "https://github.com/NicholasSynovic/tool_arXiv-db"
+keywords = ["dataset"]
+classifiers = ["Development Status :: 3 - Alpha"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -18,7 +18,9 @@ pandas = "^2.2.2"
 progress = "^1.6"
 click = "^8.1.7"
 
-
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+arXivDB = "src.main:main"

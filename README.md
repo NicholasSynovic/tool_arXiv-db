@@ -1,36 +1,36 @@
-# Python Template Repository
+# arXiv Database
 
-> A template repository that Python projects can inherit from to ensure tooling
-> consistency
+> Code to convert the
+> [arXiv Dataset](https://www.kaggle.com/datasets/Cornell-University/arxiv) from
+> JSON to an SQLite3 database
 
 ## Table of Contents
 
-- [Python Template Repository](#python-template-repository)
+- [arXiv Database](#arxiv-database)
   - [Table of Contents](#table-of-contents)
   - [About](#about)
-  - [Supported Tooling](#supported-tooling)
+  - [How To Create Your Dataset](#how-to-create-your-dataset)
+  - [Database Schema](#database-schema)
 
 ## About
 
-This is a template repository that is intended to be inherited by other template
-repositories *to ensure consistent common tool deployment across languages*.
+This project is meant to convert the arXiv Dataset from JSON to SQLite3 to
+support language agnostic querying and distribution.
 
-This will also support *optional* tooling that services like GitHub offer in
-order to provide repository owners access to these features without them having
-to discover it themselves.
+A blog post about this project is availible on [Dev.to](<>).
 
-## Supported Tooling
+## How To Create Your Dataset
 
-The following tooling is supported:
+> NOTE: Wherever you see `DATASET`, replace it with the relevant path or
+> directory
 
-- [Base Template Tooling](https://github.com/NicholasSynovic/template_base)
-- [Python .gitignore](.gitignore)
-- [Pypi Requirements](requirements.txt)
-  - [Poetry](.pyproject.toml)
-  - Sphinx
-- [Python pre-commit hooks](.pre-commit-config.yaml)
-  - Pyroma
-  - [isort](.isort.cfg)
-  - Black
-  - Flake8
-  - Bandit
+1. `git clone https://github.com/NicholasSynovic/tool_arXiv-db`
+1. `cd tool_arXiv-db`
+1. `make create-dev && make build`
+1. `kaggle datasets download --unzip Cornell-University/arxiv -p DATASET`
+1. `jq -c . DATASET.json > DATASET.jsonlines`
+1. `arXivDB -i DATASET.jsonlines -o DATASET.sqlite3`
+
+## Database Schema
+
+![](data/images/schema.png)
