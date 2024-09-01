@@ -17,7 +17,8 @@
 This project is meant to convert the arXiv Dataset from JSON to SQLite3 to
 support language agnostic querying and distribution.
 
-A blog post about this project is availible on [Dev.to](<>).
+A blog post about this project is availible on
+[Dev.to](https://dev.to/nicholassynovic/creating-an-arxiv-db-940).
 
 ## How To Create Your Dataset
 
