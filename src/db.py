@@ -65,6 +65,7 @@ class DB:
             Column("journal-ref", String),
             Column("doi", String),
             Column("report-no", String),
+            Column("categories", String),
             Column("license", String),
             Column("abstract", String),
             Column("update_date", DateTime),

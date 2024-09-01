@@ -50,6 +50,7 @@ def getDocuments(df: DataFrame) -> DataFrame:
             "journal-ref",
             "doi",
             "report-no",
+            "categories",
             "license",
             "abstract",
             "update_date",
