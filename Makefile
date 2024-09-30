@@ -3,7 +3,7 @@ build:
 	pip install dist/*.tar.gz
 
 build-docs:
-	sphinx-build --builder html src-docs build-docs
+	sphinx-build --builder html docs build-docs
 
 create-dev:
 	pre-commit install
@@ -17,4 +17,4 @@ create-dev:
 	)
 
 create-docs:
-	sphinx-apidoc src --output-dir src-docs --maxdepth 100 --separate
+	sphinx-apidoc src --output-dir docs --maxdepth 100 --separate

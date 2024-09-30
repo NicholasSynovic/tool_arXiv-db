@@ -6,7 +6,7 @@ import pandas
 from pandas import DataFrame
 from progress.spinner import Spinner
 
-from src.db import DB
+from arxiv_db.db import DB
 
 
 def readJSON(fp: Path, chunksize: int = 10000) -> Iterator[DataFrame]:

@@ -29,7 +29,7 @@ A blog post about this project is availible on [Dev.to](<>).
 1. `make create-dev && make build`
 1. `kaggle datasets download --unzip Cornell-University/arxiv -p DATASET`
 1. `jq -c . DATASET.json > DATASET.jsonlines`
-1. `arXivDB -i DATASET.jsonlines -o DATASET.sqlite3`
+1. `arXiv-db -i DATASET.jsonlines -o DATASET.sqlite3`
 
 ## Database Schema
 
