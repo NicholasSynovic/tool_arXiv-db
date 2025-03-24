@@ -21,6 +21,6 @@ package:
 		--onefile \
 		--add-data ./src/_version:. \
 		--workpath ./pyinstaller \
-		--name src \
+		--name arXiv-db \
 		--hidden-import src \
 		src/main.py

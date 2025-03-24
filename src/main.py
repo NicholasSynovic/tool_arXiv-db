@@ -3,9 +3,10 @@ from typing import Iterator
 
 import click
 import pandas
-from arxiv_db.db import DB
 from pandas import DataFrame
 from progress.spinner import Spinner
+
+from src.db import DB
 
 
 def readJSON(fp: Path, chunksize: int = 10000) -> Iterator[DataFrame]:
