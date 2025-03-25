@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "src"
-version = "0.1.0"
+version = "0.2.0"
 description = "Code to convert the [arXiv Dataset](https://www.kaggle.com/datasets/Cornell-University/arxiv) from JSON to an SQLite3 database"
 license = "GNU Affero"
 authors = ["Nicholas M. Synovic <nicholas.synovic@gmail.com>"]
