@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 from typing import Iterator
 
@@ -221,6 +222,12 @@ def loadData(dfs: Iterator[DataFrame], db: DB) -> None:
     ),
     required=True,
     help="Path to store SQLite3 database",
+)
+@click.version_option(
+    version=open(file=Path(sys._MEIPASS, "_version")).read()
+    if hasattr(sys, "_MEIPASS")
+    else open(file=Path(Path(__file__).parent, "_version")).read(),
+    prog_name="arXiv_db",
 )
 def main(inputPath: Path, outputPath: Path) -> None:
     jr: Iterator[DataFrame] = readJSON(fp=inputPath)

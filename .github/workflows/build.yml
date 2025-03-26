@@ -37,4 +37,4 @@ jobs:
       - name: Release the project
         uses: softprops/action-gh-release@v2
         with:
-          files: ./dist/src
+          files: ./dist/arXiv-db
