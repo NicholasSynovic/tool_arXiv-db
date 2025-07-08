@@ -28,6 +28,7 @@ dependencies = [
     "pandas>=2.2.2,<3",
     "progress~=1.6",
     "click>=8.1.7,<9",
+    "pydantic>=2.11.7",
 ]
 
 [project.urls]
