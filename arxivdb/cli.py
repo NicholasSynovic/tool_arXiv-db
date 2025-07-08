@@ -3,7 +3,7 @@ import importlib.metadata
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
 
-from arxivdb.api import utils
+from arxivdb.api import file_system
 
 
 class CLI:
@@ -19,7 +19,8 @@ class CLI:
             "--input",
             required=True,
             help="Path to a JSON Lines arXiv metadata file",
-            type=utils.resolve_path,
+            type=file_system.resolve_path,
+            nargs=1,
         )
 
         self.parser.add_argument(
@@ -27,7 +28,8 @@ class CLI:
             "--output",
             required=True,
             help="Path to store SQLite3 database",
-            type=utils.resolve_path,
+            type=file_system.resolve_path,
+            nargs=1,
         )
 
         self.parser.add_argument(
