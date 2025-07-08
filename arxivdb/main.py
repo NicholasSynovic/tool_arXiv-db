@@ -6,7 +6,6 @@ import click
 import pandas
 from pandas import DataFrame
 from progress.spinner import Spinner
-
 from src.db import DB
 
 
