@@ -59,29 +59,6 @@ def getAuthors(df: DataFrame, idIncrement: int = 0) -> DataFrame:
     :return: A new DataFrame with the extracted author information and unique IDs.
     :rtype: DataFrame
     """  # noqa: E501
-    authorsDF: DataFrame = df[["id", "authors_parsed"]]
-
-    authorsDF = authorsDF.explode(
-        column="authors_parsed",
-        ignore_index=True,
-    )
-
-    authorsDF["author"] = authorsDF["authors_parsed"].apply(
-        lambda x: ", ".join(x),
-    )
-
-    authorsDF = authorsDF.drop(columns="authors_parsed")
-    authorsDF.index += idIncrement
-    authorsDF = authorsDF.reset_index()
-
-    authorsDF = authorsDF.rename(
-        columns={
-            "id": "document_id",
-            "index": "id",
-        }
-    )
-
-    return authorsDF
 
 
 def getVersions(df: DataFrame, idIncrement: int = 0) -> DataFrame:

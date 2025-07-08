@@ -13,6 +13,14 @@ def is_file(fp: Path) -> bool:
     return fp.is_file(follow_symlinks=False)
 
 
+def count_lines(fp: Path) -> int:
+    count: int = 0
+    for count, _ in enumerate(iterable=open(file=fp, mode="r")):
+        pass
+
+    return count + 1
+
+
 def read_json(fp: Path, chunksize: int = 10000) -> Iterator[DataFrame]:
     """
     Read a JSON file into chunks of DataFrames.
