@@ -1,26 +1,20 @@
 build:
-	git describe --abbrev=0 --tags | xargs -I % poetry version %
-	poetry version --short > src/_version
-	poetry build
-	pip install dist/*.tar.gz
+	git describe --tags --abbrev=0 | tail -n 1 | xargs -I % uv version %
+	rm -rf dist/
+	uv build
+	uv pip install dist/*.tar.gz
 
 create-dev:
 	pre-commit install
 	pre-commit autoupdate
-	rm -rf env
-	python3.10 -m venv env
-	( \
-		. env/bin/activate; \
-		pip install -r requirements.txt; \
-		poetry install; \
-		deactivate; \
-	)
+	uv sync
+	uv build
 
-package:
-	pyinstaller --clean \
-		--onefile \
-		--add-data ./src/_version:. \
-		--workpath ./pyinstaller \
-		--name arXiv-db \
-		--hidden-import src \
-		src/main.py
+generate-db-diagram:
+	schemacrawler.sh \
+		--server=sqlite \
+		--database=arxiv.sqlite3 \
+		--info-level=standard \
+		--command=schema \
+		--output-format=png \
+		--output-file=docs/imgs/schema.png
