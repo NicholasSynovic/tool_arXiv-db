@@ -17,4 +17,4 @@ generate-db-diagram:
 		--info-level=standard \
 		--command=schema \
 		--output-format=png \
-		--output-file=docs/imgs/schema.png
+		--output-file=data/images/schema.png

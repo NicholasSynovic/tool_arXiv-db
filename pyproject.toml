@@ -1,6 +1,6 @@
 [project]
 name = "arxivdb"
-version = "0.3.0"
+version = "0.3.1"
 description = "Code to convert the [arXiv Dataset](https://www.kaggle.com/datasets/Cornell-University/arxiv) from JSON to an SQLite3 database"
 authors = [{ name = "Nicholas M. Synovic", email = "nicholas.synovic@gmail.com" }]
 requires-python = "~=3.13"
