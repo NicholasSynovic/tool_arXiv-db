@@ -1,22 +1,60 @@
+"""
+File system related methods.
+
+Copyright (C) 2025 Nicholas M. Synovic.
+
+"""
+
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Iterator
 
 import pandas as pd
 from pandas import DataFrame
 
 
 def resolve_path(fp: str) -> Path:
+    """
+    Resolve the given file path to an absolute path.
+
+    Args:
+        fp (str): The file path to resolve.
+
+    Returns:
+        Path: The resolved absolute path.
+
+    """
     return Path(fp).resolve()
 
 
 def is_file(fp: Path) -> bool:
+    """
+    Check if the given path is a file.
+
+    Args:
+        fp (Path): The path to check.
+
+    Returns:
+        bool: True if the path is a file, False otherwise.
+
+    """
     return fp.is_file(follow_symlinks=False)
 
 
 def count_lines(fp: Path) -> int:
+    """
+    Count the number of lines in a file.
+
+    Args:
+        fp (Path): The path to the file.
+
+    Returns:
+        int: The number of lines in the file.
+
+    """
     count: int = 0
-    for count, _ in enumerate(iterable=open(file=fp, mode="r")):
-        pass
+    with fp.open(encoding="utf-8") as json_file:
+        for idx, _ in enumerate(iterable=json_file):
+            count += idx
 
     return count + 1
 

@@ -1,5 +1,11 @@
+"""
+SQLite3 Database Class.
+
+Copyright (C) 2025 Nicholas M. Synovic.
+
+"""
+
 from pathlib import Path
-from typing import List
 
 from pandas import DataFrame
 from sqlalchemy import (
@@ -14,43 +20,56 @@ from sqlalchemy import (
     Table,
     create_engine,
 )
-from sqlalchemy.exc import IntegrityError
 
 
 class DB:
+    """
+    A class to manage interactions with an SQLite database.
+
+    This class provides methods for creating tables, writing data to tables, and
+    managing database connections using SQLAlchemy. It is designed to handle
+    document metadata and related information, including authors and versions.
+
+    Attributes:
+        path (Path): The path to the SQLite database file.
+        engine (Engine): The SQLAlchemy engine for database connections.
+        metadata (MetaData): The SQLAlchemy MetaData object for managing table
+            schemas.
+
+    """
+
     def __init__(self, path: Path) -> None:
         """
         Initialize an instance of the class.
 
-        This method sets up the necessary attributes for the class, including:
+        Set up the necessary attributes for the class, including the database
+        connection engine, and the metadata object used to create tables.
 
-        * The database connection engine.
-        * The metadata object used to create tables.
-        * The names of the three tables to be created (documents, authors, and versions).
+        Args:
+            path (Path): The path to the SQLite database file.
 
-        :param path: The path to the SQLite database file.
-        :type path: Path
-        """  # noqa: E501
+        """
         self.path: Path = path
         self.engine: Engine = create_engine(url=f"sqlite:///{path}")
         self.metadata: MetaData = MetaData()
 
-        self.createTables()
+        self.create_tables()
 
-    def createTables(self) -> None:
+    def create_tables(self) -> None:
         """
         Create SQL tables for document metadata and related information.
 
         This method creates three SQL tables using the SQLAlchemy library:
+
         - The `documents` table to store metadata about individual documents.
-        - The `authors` table to store information about authors associated with each document.
+        - The `authors` table to store information about authors associated with
+            each document.
         - The `versions` table to store versions of each document.
 
-        Each table is created with a primary key and, where applicable, foreign key constraints
-        to establish relationships between the tables.
+        Each table is created with a primary key and, where applicable, foreign
+        key constraints to establish relationships between the tables.
 
-        :return: None
-        """  # noqa: E501
+        """
         _: Table = Table(
             "documents",
             self.metadata,
@@ -95,9 +114,18 @@ class DB:
 
         self.metadata.create_all(bind=self.engine, checkfirst=True)
 
-    def write_table(self, tableName: str, df: DataFrame) -> None:
+    def write_table(self, table_name: str, df: DataFrame) -> None:
+        """
+        Write a DataFrame to a SQL table.
+
+        Args:
+            table_name (str): The name of the table to write the DataFrame to.
+            df (DataFrame): The DataFrame containing data to be written to the
+                SQL table.
+
+        """
         df.to_sql(
-            name=tableName,
+            name=table_name,
             con=self.engine,
             if_exists="append",
             index=False,
