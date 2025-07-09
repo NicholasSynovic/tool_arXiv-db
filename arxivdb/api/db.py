@@ -20,6 +20,7 @@ from sqlalchemy import (
     Table,
     create_engine,
 )
+from sqlalchemy.exc import IntegrityError
 
 
 class DB:
@@ -116,7 +117,11 @@ class DB:
 
     def write_table(self, table_name: str, df: DataFrame) -> None:
         """
-        Write a DataFrame to a SQL table.
+        Write a DataFrame to a SQL table, handling potential integrity errors.
+
+        This method attempts to append the DataFrame to the specified SQL table.
+        If an IntegrityError occurs (e.g., due to duplicate primary keys), it
+        filters out the conflicting rows and retries the operation.
 
         Args:
             table_name (str): The name of the table to write the DataFrame to.
@@ -124,9 +129,21 @@ class DB:
                 SQL table.
 
         """
-        df.to_sql(
-            name=table_name,
-            con=self.engine,
-            if_exists="append",
-            index=False,
-        )
+        try:
+            df.to_sql(
+                name=table_name,
+                con=self.engine,
+                if_exists="append",
+                index=False,
+            )
+
+        except IntegrityError as error:
+            ids: list[str] = [param[0] for param in error.params]
+            df = df[~df["id"].isin(values=ids)]
+
+            df.to_sql(
+                name=table_name,
+                con=self.engine,
+                if_exists="append",
+                index=False,
+            )
