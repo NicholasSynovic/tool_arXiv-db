@@ -13,8 +13,8 @@ create-dev:
 generate-db-diagram:
 	schemacrawler.sh \
 		--server=sqlite \
-		--database=prime.sqlite3 \
+		--database=arxiv.sqlite3 \
 		--info-level=standard \
 		--command=schema \
 		--output-format=png \
-		--output-file=docs/imgs/db_diagram.png
+		--output-file=docs/imgs/schema.png

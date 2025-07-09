@@ -53,8 +53,8 @@ def count_lines(fp: Path) -> int:
     """
     count: int = 0
     with fp.open(encoding="utf-8") as json_file:
-        for idx, _ in enumerate(iterable=json_file):
-            count += idx
+        for count, _ in enumerate(iterable=json_file):  # noqa: B007
+            pass
 
     return count + 1
 

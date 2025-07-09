@@ -31,7 +31,7 @@ def main() -> None:
     args: dict[str, list[Path | int]] = cli.CLI().parse_args().__dict__
     input_fp: Path = args["input"][0]
     output_fp: Path = args["output"][0]
-    chunksize: int = args["chunksize"][0]
+    chunksize: int = args["chunksize"]
 
     db: DB = DB(path=output_fp)
 
