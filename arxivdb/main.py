@@ -13,9 +13,9 @@ from pandas import DataFrame
 from progress.bar import Bar
 
 import arxivdb.cli as arxivdb_cli
+import arxivdb.db as arxivdb_db
 import arxivdb.file_system as arxivdb_fs
 from arxivdb.api import data
-from arxivdb.api.db import DB
 
 
 def main() -> None:
@@ -36,7 +36,7 @@ def main() -> None:
     output_fp: Path = args["output"][0]
     chunksize: int = args["chunksize"]
 
-    db: DB = DB(path=output_fp)
+    db: arxivdb_db.DB = arxivdb_db.DB(path=output_fp)
 
     line_count: int = arxivdb_fs.count_lines(fp=input_fp)
     dfs_count: int = math.ceil(line_count / chunksize)
