@@ -6,10 +6,12 @@ Copyright (C) 2025 Nicholas M. Synovic.
 """
 
 import math
+from collections import defaultdict
 from collections.abc import Iterator
 from pathlib import Path
 
-from pandas import DataFrame
+import pandas as pd
+from pandas import DataFrame, Series
 from progress.bar import Bar
 
 import arxivdb.cli as arxivdb_cli
@@ -39,23 +41,55 @@ def main() -> None:
     db: arxivdb_db.DB = arxivdb_db.DB(path=output_fp)
 
     line_count: int = arxivdb_fs.count_lines(fp=input_fp)
-    dfs_count: int = math.ceil(line_count / chunksize)
+    json_chunk_count: int = math.ceil(line_count / chunksize)
 
-    dfs: Iterator[DataFrame] = arxivdb_fs.read_json(
+    json_chunks: Iterator[DataFrame] = arxivdb_fs.read_json(
         fp=input_fp,
         chunksize=chunksize,
     )
 
-    with Bar("Iterating JSON document in chunks...", max=dfs_count) as bar:
-        df: DataFrame
-        for df in dfs:
-            document_data: DataFrame = arxivdb_data.get_documents(df=df)
-            author_data: DataFrame = arxivdb_data.get_authors(df=df)
-            document_version_data: DataFrame = arxivdb_data.get_document_versions(df=df)
+    unique_attributes: dict[str, list[Series]] = defaultdict(list)
+    documents: list[DataFrame] = []
+    document_versions: list[DataFrame] = []
 
-            db.write_table(table_name="documents", df=document_data)
-            db.write_table(table_name="authors", df=author_data)
-            db.write_table(table_name="versions", df=document_version_data)
+    with Bar(
+        "Iterating JSON document in chunks...",
+        max=json_chunk_count,
+    ) as bar:
+        json_chunk: DataFrame
+        for json_chunk in json_chunks:
+            # Get the unique categories in this JSON chunk
+            unique_attributes["categories"].append(
+                arxivdb_data.get_unique_categories(
+                    json_chunk=json_chunk,
+                )
+            )
+
+            # Get the unique submitters in this JSON chunk
+            unique_attributes["submitters"].append(
+                arxivdb_data.get_unique_submitters(
+                    json_chunk=json_chunk,
+                )
+            )
+
+            # Get the unique authors in this JSON chunk
+            unique_attributes["authors"].append(
+                arxivdb_data.get_unique_authors(
+                    json_chunk=json_chunk,
+                )
+            )
+
+            # Get the versions per document in this JSON chunk
+            document_versions.append(
+                arxivdb_data.get_document_versions(json_chunk=json_chunk)
+            )
+
+            # Get the documents in this JSON chunk
+            documents.append(
+                arxivdb_data.get_documents(
+                    json_chunk=json_chunk,
+                )
+            )
 
             bar.next()
 
