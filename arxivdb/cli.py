@@ -9,7 +9,7 @@ import importlib
 import importlib.metadata
 from argparse import ArgumentParser, Namespace
 
-from arxivdb.api import file_system
+import arxivdb.file_system as arxivdb_fs
 
 
 class CLI:
@@ -49,7 +49,7 @@ class CLI:
             "--input",
             required=True,
             help="Path to a JSON Lines arXiv metadata file",
-            type=file_system.resolve_path,
+            type=arxivdb_fs.resolve_path,
             nargs=1,
         )
 
@@ -58,7 +58,7 @@ class CLI:
             "--output",
             required=True,
             help="Path to store SQLite3 database",
-            type=file_system.resolve_path,
+            type=arxivdb_fs.resolve_path,
             nargs=1,
         )
 
