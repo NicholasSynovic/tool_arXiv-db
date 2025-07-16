@@ -13,9 +13,9 @@ from pandas import DataFrame
 from progress.bar import Bar
 
 import arxivdb.cli as arxivdb_cli
+import arxivdb.data as arxivdb_data
 import arxivdb.db as arxivdb_db
 import arxivdb.file_system as arxivdb_fs
-from arxivdb.api import data
 
 
 def main() -> None:
@@ -49,9 +49,9 @@ def main() -> None:
     with Bar("Iterating JSON document in chunks...", max=dfs_count) as bar:
         df: DataFrame
         for df in dfs:
-            document_data: DataFrame = data.get_documents(df=df)
-            author_data: DataFrame = data.get_authors(df=df)
-            document_version_data: DataFrame = data.get_document_versions(df=df)
+            document_data: DataFrame = arxivdb_data.get_documents(df=df)
+            author_data: DataFrame = arxivdb_data.get_authors(df=df)
+            document_version_data: DataFrame = arxivdb_data.get_document_versions(df=df)
 
             db.write_table(table_name="documents", df=document_data)
             db.write_table(table_name="authors", df=author_data)
