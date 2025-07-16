@@ -12,8 +12,9 @@ from pathlib import Path
 from pandas import DataFrame
 from progress.bar import Bar
 
-from arxivdb import cli
-from arxivdb.api import data, file_system
+import arxivdb.cli as arxivdb_cli
+import arxivdb.file_system as arxivdb_fs
+from arxivdb.api import data
 from arxivdb.api.db import DB
 
 
@@ -28,17 +29,19 @@ def main() -> None:
     database.
 
     """
-    args: dict[str, list[Path | int]] = cli.CLI().parse_args().__dict__
+    cli: arxivdb_cli.CLI = arxivdb_cli.CLI()
+    args: dict = cli.parse_args().__dict__
+
     input_fp: Path = args["input"][0]
     output_fp: Path = args["output"][0]
     chunksize: int = args["chunksize"]
 
     db: DB = DB(path=output_fp)
 
-    line_count: int = file_system.count_lines(fp=input_fp)
+    line_count: int = arxivdb_fs.count_lines(fp=input_fp)
     dfs_count: int = math.ceil(line_count / chunksize)
 
-    dfs: Iterator[DataFrame] = file_system.read_json(
+    dfs: Iterator[DataFrame] = arxivdb_fs.read_json(
         fp=input_fp,
         chunksize=chunksize,
     )
