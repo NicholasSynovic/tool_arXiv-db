@@ -11,32 +11,38 @@ import pandas as pd
 from pandas import DataFrame, Series
 
 
-def get_unique_categories(json_chunk: DataFrame) -> Series:
-    data: DataFrame = json_chunk[["categories"]].copy()
-    data = data.fillna(value="EMPTY")
-    data["categories"] = data["categories"].str.strip()
-    data["split_categories"] = data["categories"].str.split(pat=" ")
-    return Series(data["split_categories"].explode().unique())
+def get_categories(json_chunk: DataFrame) -> DataFrame:
+    compressed_data: DataFrame = json_chunk[["id", "categories"]].copy()
+    compressed_data = compressed_data.fillna(value="EMPTY")
+    compressed_data["categories"] = compressed_data["categories"].str.strip()
+    compressed_data["split_categories"] = compressed_data["categories"].str.split(
+        pat=" "
+    )
+
+    return compressed_data.explode(column="split_categories", ignore_index=True)
 
 
-def get_unique_submitters(json_chunk: DataFrame) -> Series:
-    data: DataFrame = json_chunk[["submitter"]].copy()
+def get_submitters(json_chunk: DataFrame) -> DataFrame:
+    data: DataFrame = json_chunk[["id", "submitter"]].copy()
     data = data.fillna(value="EMPTY")
     data["submitter"] = data["submitter"].str.strip()
-    return Series(data["submitter"].unique())
+    return data
 
 
-def get_unique_authors(json_chunk: DataFrame) -> Series:
-    data: DataFrame = json_chunk[["authors_parsed"]].copy()
-    data = data.fillna(value="EMPTY")
-    authors: Series = (
+def get_authors(json_chunk: DataFrame) -> DataFrame:
+    compressed_data: DataFrame = json_chunk[["id", "authors_parsed"]].copy()
+    compressed_data = compressed_data.fillna(value="EMPTY")
+
+    data: DataFrame = compressed_data.explode(
+        column="authors_parsed", ignore_index=True
+    )
+    data["authors"] = (
         data["authors_parsed"]
-        .explode()
         .apply(" ".join)
         .str.replace(pat="  ", repl=" ")
         .str.strip()
     )
-    return Series(authors.unique())
+    return data.drop(columns="authors_parsed")
 
 
 def get_document_versions(json_chunk: DataFrame) -> DataFrame:
@@ -90,3 +96,12 @@ def get_documents(json_chunk: DataFrame) -> DataFrame:
     data["update_date"] = data["update_date"].apply(func=pd.Timestamp)
 
     return data
+
+
+def get_unique_categories(json_chunk: DataFrame) -> Series: ...
+
+
+def get_unique_submitters(json_chunk: DataFrame) -> Series: ...
+
+
+def get_unique_authors(json_chunk: DataFrame) -> Series: ...
